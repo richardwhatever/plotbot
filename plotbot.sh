@@ -7,10 +7,10 @@ export TERM=xterm
 
 # this will only work on Linux - I am working on a Mac version
 
-DESTINATION_EMAIL="someone@somewhere.com"
+DESTINATION_EMAIL="richardwhatever@gmail.com"
 
 # temp directory for holding html output - *you will need to create this manually*
-PLOTBOT_DIR="/home/user/plotbot"
+PLOTBOT_DIR="/home/richard/plotbot"
 
 write_html_block() {
     echo "<h3>$1</h3><pre>" >> "$PLOTBOT_DIR/plotbot_output.html"
@@ -18,12 +18,13 @@ write_html_block() {
     echo "</pre>" >> "$PLOTBOT_DIR/plotbot_output.html"
 }
 
-
 cd ~/chia-blockchain && . ./activate
+#(cd ~/chia-blockchain && . ./activate) || (exit "Could not load the Chia application"; exit 1)
+
 
 cd "$PLOTBOT_DIR"
 
-touch plotbot_output.html
+> plotbot_output.html
 echo  "<html><body><h2>$(hostname)</h2>" >> plotbot_output.html
 
 # first argument is the friendly description, second argument is the linux CLI command to output
@@ -40,6 +41,7 @@ write_html_block "disk space" "$(df)"
 
 write_html_block "chia plot directories" "$(chia plots show)"
 
+# needs mpstat - sudo apt install sysstat
 write_html_block "cpu usage" "$(mpstat)"
 
 write_html_block "chia error log" "$(cat ~/.chia/mainnet/log/debug.log | grep 'ERR' |  tail -n 20)"
@@ -56,11 +58,7 @@ write_html_block "chia proofs found log" "$(cat ~/.chia/mainnet/log/debug.log  |
 
 write_html_block "syslog" "$(tail -n 20 /var/log/syslog)"
 
-mail -a 'Content-Type: text/html' -s "chia update : $(hostname) : $(date +%F) $(date +%T)" $DESTINATION_EMAIL < plotbot_output.html
-
-rm plotbot_output.html
+# needs mailutils - sudo apt install mailutils
+mail -a 'Content-Type: text/html' -s "chia update : $(hostname) : $(date +%F) $(date +%T)" -r plotbot@domain.com $DESTINATION_EMAIL < plotbot_out>
 
 exit
-
-
-
