@@ -59,6 +59,6 @@ write_html_block "chia proofs found log" "$(cat ~/.chia/mainnet/log/debug.log  |
 write_html_block "syslog" "$(tail -n 20 /var/log/syslog)"
 
 # needs mailutils - sudo apt install mailutils
-mail -a 'Content-Type: text/html' -s "chia update : $(hostname) : $(date +%F) $(date +%T)" -r plotbot@domain.com $DESTINATION_EMAIL < plotbot_out>
+mail -a 'Content-Type: text/html' -s "chia update : $(hostname) : $(date +%F) $(date +%T)" -r plotbot@domain.com $DESTINATION_EMAIL < plotbot_output.html
 
 exit
